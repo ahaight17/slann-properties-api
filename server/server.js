@@ -6,7 +6,7 @@ var port = process.env.PORT || 8000;
 var app = express();
 
 const httpsServer = https.createServer({
-  key: fs.readFileSync('./slannpkey.key'),
+  key: fs.readFileSync('./slannprivate.key'),
   cert: fs.readFileSync('./slannserver.crt')
 }, app)
 

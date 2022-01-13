@@ -4,6 +4,7 @@ const router = express.Router()
 router.get('/:address', getAddress)
 
 function getAddress(req, res) {
+	console.log(req.app)
   const db = req.app.db.db
   const address = req.params.address.replace(/[-]/g, ' ')
   console.log(address)
