@@ -1,0 +1,27 @@
+{
+  "name": "slann-properties-api",
+  "version": "1.0.0",
+  "description": "API for slannproperties.com",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/server.js",
+    "dev": "nodemon -r dotenv/config ./server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahaight17/slann-properties-api.git"
+  },
+  "author": "Alex Haight & Drew Emery",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahaight17/slann-properties-api/issues"
+  },
+  "homepage": "https://github.com/ahaight17/slann-properties-api#readme",
+  "dependencies": {
+    "dotenv": "^11.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^4.3.0",
+    "nodemon": "^2.0.15"
+  }
+}
