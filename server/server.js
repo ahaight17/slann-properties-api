@@ -6,17 +6,18 @@ const http = require('http')
 var port = process.env.PORT || 8000;
 var app = express();
 
-// const httpsServer = https.createServer({
-//   key: fs.readFileSync('./slannprivate.key'),
-//   cert: fs.readFileSync('./slannserver.crt')
-// }, app)
-const httpServer = http.createServer(app)
+const httpsServer = https.createServer({
+  key: fs.readFileSync('./slannprivate.key'),
+  cert: fs.readFileSync('./slannserver.crt')
+}, app)
 
-httpServer.listen(port, () => {
+httpsServer.listen(port, () => {
   console.log('Started listening on port: ', port);
 })
 
-// httpsServer.listen(port, () => {
+// const httpServer = http.createServer(app)
+
+// httpServer.listen(port, () => {
 //   console.log('Started listening on port: ', port);
 // })
 
