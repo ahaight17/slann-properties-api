@@ -2,6 +2,7 @@ module.exports = (app) => {
 
   const databaseConnection = require('./utils/databaseConnection')
   const PropertyController = require('./PropertyController/PropertyController')
+  const bodyParser = require('body-parser')
 
   databaseConnection().then((db) => {
     app.db = db;
@@ -16,6 +17,8 @@ module.exports = (app) => {
   }
 
   app.get('/', CORS, index)
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: false }))
   app.use('/property', CORS, PropertyController)
 
   function index(req, res){
