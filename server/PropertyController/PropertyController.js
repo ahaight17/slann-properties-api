@@ -3,6 +3,7 @@ const router = express.Router()
 
 router.get('/all', getAllProperties)
 router.get('/address/:address', getAddress)
+router.post('/uploadProperty', uploadProperty)
 
 function getAllProperties(req, res){
   const db = req.app.db.db
@@ -35,6 +36,27 @@ function getAddress(req, res) {
       res.status(200).send({});
     }
   })
+}
+
+function uploadProperty(req, res){
+  const db = req.app.db.db
+  const property = req.body;
+
+  if(!property) res.status(200).send()
+  else{
+    db.collection('properties').insertOne(property, (dbErr, result) => {
+      if(dbErr){
+        console.error(dbErr)
+        res.status(500).send(dbErr)
+      }
+      if(result){
+        res.status(200).send()
+      } else {
+        res.status(200).send();
+      }
+    })
+  }
+
 }
 
 module.exports = router
