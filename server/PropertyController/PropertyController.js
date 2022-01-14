@@ -1,9 +1,24 @@
 const express = require('express')
 const router = express.Router()
+const { auth } = require('express-oauth2-jwt-bearer');
+var jwt = require('express-jwt');
+var jwks = require('jwks-rsa');
+
+var jwtCheck = jwt({
+      secret: jwks.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: 'https://andrewemery.us.auth0.com/.well-known/jwks.json'
+    }),
+    audience: 'https://tal-tiny-ween-api',
+    issuer: 'https://andrewemery.us.auth0.com/',
+    algorithms: ['RS256']
+});
 
 router.get('/all', getAllProperties)
 router.get('/address/:address', getAddress)
-router.post('/uploadProperty', uploadProperty)
+router.post('/uploadProperty', jwtCheck, uploadProperty)
 
 function getAllProperties(req, res){
   const db = req.app.db.db
