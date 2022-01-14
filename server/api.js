@@ -2,7 +2,12 @@ module.exports = (app) => {
 
   const databaseConnection = require('./utils/databaseConnection')
   const PropertyController = require('./PropertyController/PropertyController')
+  const PhotosController = require('./PhotosController/PhotosController')
   const bodyParser = require('body-parser')
+  const AWS = require('aws-sdk')
+
+  AWS.config.update({region: 'us-east-2'})
+  app.s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
   databaseConnection().then((db) => {
     app.db = db;
@@ -20,6 +25,7 @@ module.exports = (app) => {
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use('/property', CORS, PropertyController)
+  app.use('/photos', CORS, PhotosController)
 
   function index(req, res){
     res.status(200).send(

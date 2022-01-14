@@ -4,6 +4,7 @@ const { ObjectId } = require('mongodb');
 const { auth } = require('express-oauth2-jwt-bearer');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
+const PhotosLib = require('../PhotosController/PhotosLib');
 
 var jwtCheck = jwt({
       secret: jwks.expressJwtSecret({
@@ -18,8 +19,9 @@ var jwtCheck = jwt({
 });
 
 router.get('/all', getAllProperties)
-router.get('/address/:address', getAddress)
-router.post('/uploadProperty', jwtCheck, uploadProperty)
+router.get('/address/:id', getAddress)
+router.post('/uploadProperty', uploadProperty)
+router.post('/editProperty/:id', editProperty)
 router.delete('/deleteProperty/:id', deleteProperty)
 
 function getAllProperties(req, res){
@@ -40,15 +42,23 @@ function getAllProperties(req, res){
 
 function getAddress(req, res) {
   const db = req.app.db.db
-  const address = req.params.address.replace(/[-]/g, ' ')
 
-  db.collection('properties').findOne({ address: address }, (dbErr, result) => {
+  db.collection('properties').findOne({ _id: ObjectId(req.params.id) }, (dbErr, result) => {
     if(dbErr){
       console.error(dbErr)
       res.status(500).send(dbErr)
     }
     if(result){
-      res.status(200).send(result)
+      PhotosLib.getPropertyPhotos(req, (err, photos) => {
+        if(err){
+          res.status(500).send(err)
+        }
+        if(photos){
+          res.status(200).send({...result, photos: [...photos]})
+        } else {
+          res.status(200).send({});
+        }
+      })
     } else {
       res.status(200).send({});
     }
@@ -62,6 +72,53 @@ function uploadProperty(req, res){
   if(!property) res.status(200).send()
   else{
     db.collection('properties').insertOne(property, (dbErr, result) => {
+      if(dbErr){
+        console.error(dbErr)
+        res.status(500).send(dbErr)
+      }
+      if(result){
+        res.status(200).send(result)
+      } else {
+        res.status(200).send({});
+      }
+    })
+  }
+}
+
+function editProperty(req, res){
+  const db = req.app.db.db
+  const {
+    title,
+    address,
+    city,
+    state,
+    price,
+    bedrooms,
+    bathrooms,
+    sqft,
+    description,
+    available,
+    map
+  } = req.body;
+
+  if(!req.body) res.status(200).send()
+  else{
+    db.collection('properties').findOneAndUpdate(
+      { _id: ObjectId(req.params.id) },
+      { $set: { 
+          title,
+          address,
+          city,
+          state,
+          price,
+          bedrooms,
+          bathrooms,
+          sqft,
+          description,
+          available,
+          map
+        }
+      }, (dbErr, result) => {
       if(dbErr){
         console.error(dbErr)
         res.status(500).send(dbErr)
