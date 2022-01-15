@@ -20,9 +20,9 @@ var jwtCheck = jwt({
 
 router.get('/all', getAllProperties)
 router.get('/address/:id', getAddress)
-router.post('/uploadProperty', uploadProperty)
-router.post('/editProperty/:id', editProperty)
-router.delete('/deleteProperty/:id', deleteProperty)
+router.post('/uploadProperty', jwtCheck, uploadProperty)
+router.post('/editProperty/:id', jwtCheck, editProperty)
+router.delete('/deleteProperty/:id', jwtCheck, deleteProperty)
 
 function getAllProperties(req, res){
   const db = req.app.db.db
@@ -105,7 +105,7 @@ function editProperty(req, res){
   else{
     db.collection('properties').findOneAndUpdate(
       { _id: ObjectId(req.params.id) },
-      { $set: { 
+      { $set: {
           title,
           address,
           city,

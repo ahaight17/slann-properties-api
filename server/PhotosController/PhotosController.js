@@ -20,14 +20,14 @@ var jwtCheck = jwt({
 });
 
 router.get('/all/:id', getPhotosForProperty)
-router.delete('/deletePhoto', deletePhoto)
-router.post('/uploadPhoto/:id/:name', upload.single('image'), uploadPhoto)
+router.delete('/deletePhoto', jwtCheck, deletePhoto)
+router.post('/uploadPhoto/:id/:name', jwtCheck, upload.single('image'), uploadPhoto)
 
 function getPhotosForProperty(req, res){
   PhotosLib.getPropertyPhotos(req, (err, photos) => {
     if(err){
       res.status(500).send(err)
-    } 
+    }
     if(photos){
       res.status(200).send(photos)
     } else {
