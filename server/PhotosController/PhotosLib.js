@@ -1,7 +1,9 @@
+const fs = require('fs')
 const BUCKET = 'slannproperties'
 const PhotosLib = {
   getPropertyPhotos,
-  deletePropertyPhoto
+  deletePropertyPhoto,
+  uploadPropertyPhoto
 }
 
 function getPropertyPhotos(req, next){
@@ -33,6 +35,23 @@ function deletePropertyPhoto(req, next){
     if(data){
       next(null)
     } else {
+      next(null)
+    }
+  })
+}
+
+function uploadPropertyPhoto(req, next){
+  req.app.s3.upload({
+    Bucket: BUCKET,
+    Key: `${req.params.id}/${req.file.filename}`,
+    Body: fs.createReadStream(req.file.path),
+    ACL: 'public-read'
+  }, (s3Err, data) => {
+    if(s3Err){
+      console.error(s3Err)
+      next(s3Err)
+    }
+    else {
       next(null)
     }
   })

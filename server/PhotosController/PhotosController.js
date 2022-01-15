@@ -2,8 +2,10 @@ const express = require('express')
 const router = express.Router()
 const PhotosLib = require('./PhotosLib')
 const { auth } = require('express-oauth2-jwt-bearer');
+const fs = require('fs')
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
+const upload = require('../common');
 
 var jwtCheck = jwt({
       secret: jwks.expressJwtSecret({
@@ -19,6 +21,7 @@ var jwtCheck = jwt({
 
 router.get('/all/:id', getPhotosForProperty)
 router.delete('/deletePhoto', deletePhoto)
+router.post('/uploadPhoto/:id/:name', upload.single('image'), uploadPhoto)
 
 function getPhotosForProperty(req, res){
   PhotosLib.getPropertyPhotos(req, (err, photos) => {
@@ -39,6 +42,18 @@ function deletePhoto(req, res){
       res.status(500).send(err)
     } else {
       res.status(200).send();
+    }
+  })
+}
+
+function uploadPhoto(req, res){
+  PhotosLib.uploadPropertyPhoto(req, (err) => {
+    if(err){
+      res.status(500).send(err)
+    } else {
+      res.status(200).end('', () => {
+        fs.unlinkSync(req.file.path)
+      });
     }
   })
 }
