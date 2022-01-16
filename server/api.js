@@ -6,7 +6,15 @@ module.exports = (app) => {
   const bodyParser = require('body-parser')
   const AWS = require('aws-sdk')
 
-  AWS.config.update({region: 'us-east-2'})
+  AWS.config.update(
+    { 
+      credentials: {
+        'accessKeyId': process.env.AWS_ACCESS_KEY_APP,
+        'secretAccessKey': process.env.AWS_SECRET_KEY_APP
+      },
+      region: 'us-east-2'
+    }
+  )
   app.s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
   databaseConnection().then((db) => {
