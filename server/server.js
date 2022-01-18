@@ -8,8 +8,8 @@ var app = express();
 
 
 const httpsServer = https.createServer({
- key: fs.readFileSync('./slannp2.key'),
- cert: fs.readFileSync('./slanncert3.pem')
+ key: fs.readFileSync('./slannprivate.key'),
+ cert: fs.readFileSync('./slanncertificate.pem')
 }, app)
 
 httpsServer.listen(port, () => {
