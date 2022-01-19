@@ -3,6 +3,7 @@ module.exports = (app) => {
   const databaseConnection = require('./utils/databaseConnection')
   const PropertyController = require('./PropertyController/PropertyController')
   const PhotosController = require('./PhotosController/PhotosController')
+  const MaintenanceController = require('./MaintenanceController/MaintenanceController')
   const bodyParser = require('body-parser')
   const AWS = require('aws-sdk')
 
@@ -28,13 +29,14 @@ module.exports = (app) => {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use('/property', CORS, PropertyController)
   app.use('/photos', CORS, PhotosController)
+  app.use('/maintenance', CORS, MaintenanceController)
 
   function index(req, res){
     res.status(200).send(
       `<p style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; margin: 0">
-           SLANNPROPERTIES.COM API  
-           <br>VERSION: v0.0.1         
-           <br>DATE: ${new Date().toLocaleDateString()} 
+           SLANNPROPERTIES.COM API
+           <br>VERSION: v0.0.1
+           <br>DATE: ${new Date().toLocaleDateString()}
        </p>`
     )
   }
