@@ -4,9 +4,9 @@ module.exports = (app) => {
   const PropertyController = require('./PropertyController/PropertyController')
   const PhotosController = require('./PhotosController/PhotosController')
   const MaintenanceController = require('./MaintenanceController/MaintenanceController')
-  const bodyParser = require('body-parser')
   const AWS = require('aws-sdk')
   const sgMail = require('@sendgrid/mail')
+  const express = require('express')
 
   AWS.config.update(
     { region: 'us-east-2' }
@@ -29,8 +29,8 @@ module.exports = (app) => {
   }
 
   app.get('/', CORS, index)
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(express.json({limit: '50mb'}));
+  app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
   app.use('/property', CORS, PropertyController)
   app.use('/photos', CORS, PhotosController)
   app.use('/maintenance', CORS, MaintenanceController)

@@ -19,7 +19,17 @@ router.post('/sendEmail', sendEmail)
 
 function sendEmail(req, res){
   const sg = req.app.sg
-  console.log(req.body)
+  let attachments = []
+  if(req.body.images){
+    req.body.images.forEach((img) => {
+      attachments.push({
+        filename: img.fileName,
+        type: 'image/*',
+        content: img.fileData,
+        content_id: img.fileName
+      })
+    })
+  }
   /**
    * req.body will be an object as follows: 
    * {
@@ -34,23 +44,20 @@ function sendEmail(req, res){
     I think we can reuse this route for waiting list requests as well
     and just check the request parameter
    */
-  console.log(sg)
 
   const msg = {
     to: 'alex.haight@gmail.com', // Change to your recipient
     from: 'andrewbemery@gmail.com', // Change to your verified sender
-    subject: 'Sending with SendGrid is Fun',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    subject: req.body.request === 'maintenance' ? `MAINTANENCE REQUEST - ${req.body.property}` : `WAITIN LIST REQUEST - ${req.body.property}`,
+    html: `<strong>${req.body.description}</strong>`,
+    attachments: attachments
   }
-
-  sg.send(msg).then((res) => {
-    console.log(res)
-    console.log('Email sent')
+  sg.send(msg).then((result) => {
+    console.log(result)
     res.status(200).send()
   }).catch((error) => {
     console.error(error)
-    res.status(500).send()
+    res.status(500).send(error)
   })
 }
 
