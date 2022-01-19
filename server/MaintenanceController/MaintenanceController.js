@@ -1,10 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const { ObjectId } = require('mongodb');
-const { auth } = require('express-oauth2-jwt-bearer');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
-const PhotosLib = require('../PhotosController/PhotosLib');
 
 var jwtCheck = jwt({
       secret: jwks.expressJwtSecret({
@@ -18,27 +15,43 @@ var jwtCheck = jwt({
     algorithms: ['RS256']
 });
 
-router.get('/sendEmail', sendEmail)
+router.post('/sendEmail', sendEmail)
 
 function sendEmail(req, res){
+  const sg = req.app.sg
+  console.log(req.body)
+  /**
+   * req.body will be an object as follows: 
+   * {
+      name: string,
+      number: string,
+      email: string,
+      property: string,
+      description: string,
+      request: 'maintenance' || 'waiting-list'
+    }
 
-  const sgMail = require('@sendgrid/mail')
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+    I think we can reuse this route for waiting list requests as well
+    and just check the request parameter
+   */
+  console.log(sg)
+
   const msg = {
-    to: 'andrewbemery@gmail.com', // Change to your recipient
+    to: 'alex.haight@gmail.com', // Change to your recipient
     from: 'andrewbemery@gmail.com', // Change to your verified sender
     subject: 'Sending with SendGrid is Fun',
     text: 'and easy to do anywhere, even with Node.js',
     html: '<strong>and easy to do anywhere, even with Node.js</strong>',
   }
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log('Email sent')
-    })
-    .catch((error) => {
-      console.error(error)
-    })
+
+  sg.send(msg).then((res) => {
+    console.log(res)
+    console.log('Email sent')
+    res.status(200).send()
+  }).catch((error) => {
+    console.error(error)
+    res.status(500).send()
+  })
 }
 
 module.exports = router

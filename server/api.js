@@ -6,11 +6,15 @@ module.exports = (app) => {
   const MaintenanceController = require('./MaintenanceController/MaintenanceController')
   const bodyParser = require('body-parser')
   const AWS = require('aws-sdk')
+  const sgMail = require('@sendgrid/mail')
 
   AWS.config.update(
     { region: 'us-east-2' }
   )
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
   app.s3 = new AWS.S3({apiVersion: '2006-03-01'});
+  app.sg = sgMail
 
   databaseConnection().then((db) => {
     app.db = db;
