@@ -5,6 +5,7 @@ const { auth } = require('express-oauth2-jwt-bearer');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
 const PhotosLib = require('../PhotosController/PhotosLib');
+const { resetWatchers } = require('nodemon/lib/monitor/watch');
 
 var jwtCheck = jwt({
       secret: jwks.expressJwtSecret({
@@ -138,15 +139,39 @@ function deleteProperty(req, res){
 
   if(!id) res.status(500).send()
   else{
-    db.collection('properties').deleteOne({
-      _id: ObjectId(id)
-    }, (dbErr, result) => {
-      if(dbErr){
-        console.error(dbErr)
-        res.status(500).send(dbErr)
+    PhotosLib.getPropertyPhotos(req, (err, photos) => {
+      if(err){
+        res.status(500).send(err)
       }
-      if(result){
-        res.status(200).send()
+      if(photos){
+        let promises = []
+        for(let i = 0; i < photos.length; i++){
+          req.body.key = photos[i].key
+          promises.push(PhotosLib.deletePropertyPhoto(req, (err) => {
+            if(err){
+              res.status(500).send(err)
+            }
+          }))
+        }
+        Promise.all(promises).then((_, err) => {
+          if(err){
+            res.status(500).send(err)
+          } else {
+            db.collection('properties').deleteOne({
+              _id: ObjectId(id)
+            }, (dbErr, result) => {
+              if(dbErr){
+                console.error(dbErr)
+                res.status(500).send(dbErr)
+              }
+              if(result){
+                res.status(200).send()
+              } else {
+                res.status(200).send();
+              }
+            })
+          }
+        })
       } else {
         res.status(200).send();
       }
