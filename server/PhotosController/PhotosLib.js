@@ -1,5 +1,5 @@
 const fs = require('fs')
-const BUCKET = 'slannproperties'
+const BUCKET = 'slannproperties.com'
 const PhotosLib = {
   getPropertyPhotos,
   deletePropertyPhoto,
@@ -16,7 +16,7 @@ function getPropertyPhotos(req, next){
       let propertyPhotos = []
       data.Contents.forEach((bucketItem, i) => {
         if(bucketItem.Size > 0){
-          propertyPhotos.push({url: `https://slannproperties.s3.us-east-2.amazonaws.com/${bucketItem.Key}`, key: bucketItem.Key})
+          propertyPhotos.push({url: `https://s3.us-east-2.amazonaws.com/slannproperties.com/${bucketItem.Key}`, key: bucketItem.Key})
         }
       })
       next(null, propertyPhotos)
@@ -46,7 +46,7 @@ function uploadPropertyPhoto(req, next){
     Key: `${req.params.id}/${req.file.filename}`,
     Body: fs.createReadStream(req.file.path),
     ACL: 'public-read'
-  }, (s3Err, data) => {
+  }, (s3Err) => {
     if(s3Err){
       console.error(s3Err)
       next(s3Err)
