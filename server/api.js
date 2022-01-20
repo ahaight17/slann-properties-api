@@ -3,7 +3,7 @@ module.exports = (app) => {
   const databaseConnection = require('./utils/databaseConnection')
   const PropertyController = require('./PropertyController/PropertyController')
   const PhotosController = require('./PhotosController/PhotosController')
-  const MaintenanceController = require('./MaintenanceController/MaintenanceController')
+  const EmailController = require('./EmailController/EmailController')
   const AWS = require('aws-sdk')
   const sgMail = require('@sendgrid/mail')
   const express = require('express')
@@ -33,7 +33,7 @@ module.exports = (app) => {
   app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
   app.use('/property', CORS, PropertyController)
   app.use('/photos', CORS, PhotosController)
-  app.use('/maintenance', CORS, MaintenanceController)
+  app.use('/email', CORS, EmailController)
 
   function index(req, res){
     res.status(200).send(
