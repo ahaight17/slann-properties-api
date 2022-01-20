@@ -42,14 +42,25 @@ function sendFormEmail(req, res){
 
   const subject = req.body.request === 'maintenance' ? `MAINTANENCE REQUEST - ${req.body.property}` : `WAITING LIST REQUEST - ${req.body.property}`
 
-  const msg = {
-    to: 'alex.haight@gmail.com', // Change to your recipient
+  const msg0 = {
+    to: req.body.email, // Change to your recipient
     from: 'andrewbemery@gmail.com', // Change to your verified sender
     subject: subject,
-    html: `<strong>${req.body.description}</strong>`,
+    html: `<strong><div>Name:\t${req.body.name}</div><div>Email Address:\t${req.body.email}</div><div>Phone Number:\t${req.body.number}</div><div>Property:\t${req.body.property}</div><div>...</div><div>..</div><div>.</div><div>${req.body.description}</div></strong>`,
     attachments: attachments
   }
-  sg.send(msg).then((result) => {
+  const msg1 = {
+      to: "slanntal@gmail.com", // Change to your recipient
+      from: 'andrewbemery@gmail.com', // Change to your verified sender
+      subject: subject,
+      html: `<strong><div>Name:\t${req.body.name}</div><div>Email Address:\t${req.body.email}</div><div>Phone Number:\t${req.body.number}</div><div>Property:\t${req.body.property}</div><div>...</div><div>..</div><div>.</div><div>${req.body.description}</div></strong>`,
+      attachments: attachments
+  }
+
+  let toTal = sg.send(msg0);
+  let toTenant = sg.send(msg1);
+
+  Promise.all([toTal, toTenant]).then((result)=> {
     res.status(200).send()
   }).catch((error) => {
     console.error(error)
