@@ -147,7 +147,11 @@ function deleteProperty(req, res){
         let promises = []
         for(let i = 0; i < photos.length; i++){
           req.body.key = photos[i].key
-          promises.push(PhotosLib.deletePropertyPhoto(req))
+          promises.push(PhotosLib.deletePropertyPhoto(req, (err) => {
+            if(err){
+              res.status(500).send(err)
+            }
+          }))
         }
         Promise.all(promises).then((_, err) => {
           if(err){
