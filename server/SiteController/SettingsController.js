@@ -16,7 +16,7 @@ var jwtCheck = jwt({
 });
 
 router.get('/getSettings', getSettings)
-router.post('/setWaitingList', setWaitingList)
+router.post('/setWaitingList', jwtCheck, setWaitingList)
 
 function getSettings(req, res){
   const db = req.app.db.db
