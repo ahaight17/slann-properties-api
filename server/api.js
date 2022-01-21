@@ -4,6 +4,7 @@ module.exports = (app) => {
   const PropertyController = require('./PropertyController/PropertyController')
   const PhotosController = require('./PhotosController/PhotosController')
   const EmailController = require('./EmailController/EmailController')
+  const SettingsController = require('./SiteController/SettingsController')
   const AWS = require('aws-sdk')
   const sgMail = require('@sendgrid/mail')
   const express = require('express')
@@ -34,6 +35,7 @@ module.exports = (app) => {
   app.use('/property', CORS, PropertyController)
   app.use('/photos', CORS, PhotosController)
   app.use('/email', CORS, EmailController)
+  app.use('/settings', CORS, SettingsController)
 
   function index(req, res){
     res.status(200).send(
