@@ -99,7 +99,8 @@ function editProperty(req, res){
     sqft,
     description,
     available,
-    map
+    map,
+    distance
   } = req.body;
 
   if(!req.body) res.status(200).send()
@@ -117,7 +118,8 @@ function editProperty(req, res){
           sqft,
           description,
           available,
-          map
+          map,
+          distance
         }
       }, (dbErr, result) => {
       if(dbErr){
