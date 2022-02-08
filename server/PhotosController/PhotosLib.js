@@ -16,7 +16,7 @@ function getPropertyPhotos(req, next){
       let propertyPhotos = []
       data.Contents.forEach((bucketItem, i) => {
         if(bucketItem.Size > 0){
-          propertyPhotos.push({url: `https://s3.us-east-2.amazonaws.com/slannproperties.com/${bucketItem.Key}`, key: bucketItem.Key})
+          propertyPhotos.push({url: `https://d32w5umqvneau1.cloudfront.net/${bucketItem.Key}`, key: bucketItem.Key})
         }
       })
       next(null, propertyPhotos)
